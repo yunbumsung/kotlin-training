@@ -14,15 +14,14 @@
         android:layout_height="wrap_content"
         android:hint="@string/new_post_title"
         android:maxLines="1"/>
+
     <EditText
         android:id="@+id/post_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/post_title"
         android:hint="@string/new_post_body"
         android:maxLines="20"
         android:inputType="textMultiLine"
-        tools:text="asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf"
-        />
-
+        tools:text=".."
+        android:layout_below="@+id/post_title"/>
 </RelativeLayout>

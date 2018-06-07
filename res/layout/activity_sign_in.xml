@@ -12,10 +12,9 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/fb"
-        android:layout_marginTop="16dp"
+        android:src="@drawable/logo"
         android:layout_marginBottom="16dp"
-        />
+        android:layout_marginTop="16dp"/>
     <!-- 이메일 + 비번 입력 -->
     <LinearLayout
         android:id="@+id/layout_email_password"
@@ -24,7 +23,7 @@
         android:orientation="horizontal"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/profile"
-        >
+        android:layout_marginBottom="16dp">
         <EditText
             android:id="@+id/field_email"
             android:layout_width="100dp"
@@ -33,8 +32,7 @@
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:ellipsize="end"
-            android:gravity="center_horizontal"
-            />
+            android:gravity="center_horizontal"/>
         <EditText
             android:id="@+id/field_password"
             android:layout_width="100dp"
@@ -46,26 +44,22 @@
             android:gravity="center_horizontal"
             />
     </LinearLayout>
-
     <!-- 로그인버튼 + 회원가입버튼 -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/layout_email_password"
-        >
+        android:layout_below="@+id/layout_email_password">
         <Button
             android:id="@+id/btn_sign_in"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:hint="@string/sign_in_btn"
-            />
+            android:text="@string/sign_in_btn"/>
         <Button
             android:id="@+id/btn_sign_up"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:hint="@string/sign_up_btn"
-            />
+            android:text="@string/sign_up_btn"/>
     </LinearLayout>
 </RelativeLayout>
