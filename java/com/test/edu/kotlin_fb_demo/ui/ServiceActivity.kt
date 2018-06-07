@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -40,12 +41,15 @@ class ServiceActivity : RootActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
+                viewPager.currentItem = 0
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
+                viewPager.currentItem = 1
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
+                viewPager.currentItem = 2
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -59,6 +63,23 @@ class ServiceActivity : RootActivity() {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         // 뷰페이저에 화면 공급자 연결
         viewPager.adapter = mPagerAdapter
+        viewPager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                when(position) {
+                    0 -> navigation.selectedItemId = R.id.navigation_home
+                    1 -> navigation.selectedItemId = R.id.navigation_dashboard
+                    2 -> navigation.selectedItemId = R.id.navigation_notifications
+                }
+            }
+        })
     }
 
     // 로그아웃 기능, 글쓰기 기능 넣기
