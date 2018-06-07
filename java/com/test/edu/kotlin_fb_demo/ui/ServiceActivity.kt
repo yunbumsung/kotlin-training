@@ -1,6 +1,7 @@
 package com.test.edu.kotlin_fb_demo.ui
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
@@ -99,6 +100,7 @@ class ServiceActivity : RootActivity() {
 
     fun newPost() {
         // 새 글 쓰기 화면 이동
+        startActivity(Intent(this, NewPostActivity::class.java))
     }
 
     override fun signOut() {

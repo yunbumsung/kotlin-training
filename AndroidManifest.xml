@@ -21,7 +21,11 @@
         <activity android:name=".ui.SignInActivity" />
         <activity
             android:name=".ui.ServiceActivity"
-            android:label="@string/title_activity_service"></activity>
+            android:label="@string/title_activity_service" />
+        <activity
+            android:name=".ui.NewPostActivity"
+            android:label="@string/title_activity_new_post"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

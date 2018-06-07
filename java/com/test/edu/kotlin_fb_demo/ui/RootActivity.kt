@@ -45,6 +45,10 @@ open class RootActivity : AppCompatActivity() {
     }
 
     // 세션값 획득
+    fun userID():String? {
+        return FirebaseAuth.getInstance().currentUser?.uid
+    }
+
     // 백키처리
     override fun onBackPressed() {
         // 다이얼로그가 떠있다 백키 누르면 창이 닫힘,
