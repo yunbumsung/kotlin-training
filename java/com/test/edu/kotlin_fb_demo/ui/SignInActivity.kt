@@ -8,8 +8,10 @@ import android.view.View
 import android.widget.Toast
 import com.test.edu.kotlin_fb_demo.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.test.edu.kotlin_fb_demo.models.User
 import kotlinx.android.synthetic.main.activity_sign_in.*
 
 
@@ -31,6 +33,18 @@ class SignInActivity : RootActivity(), View.OnClickListener {
         // 버튼 이벤트
         btn_sign_in.setOnClickListener(this)
         btn_sign_up.setOnClickListener(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // 인증이 살아 있다면 -> 세션이 살아 있다면 -> 로그아웃하지 않았다면
+        if (mAuth.currentUser !== null) {
+            onAuthSuccess(mAuth.currentUser!!)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
     }
 
     override fun onClick(v: View?) {
@@ -64,7 +78,8 @@ class SignInActivity : RootActivity(), View.OnClickListener {
                     if (task.isSuccessful) {
                         // 가입 성공
                         // 성공하면 -> 로그인
-                        Log.i(TAG, "로그인 성능 ${task.result.user}")
+                        Log.i(TAG, "가입 성공 ${task.result.user}")
+                        onAuthSuccess(task.result.user)
                     } else {
                         // 가입 실패
                         // 실패하면 -> 모라하고
@@ -91,5 +106,28 @@ class SignInActivity : RootActivity(), View.OnClickListener {
         }
 
         return result
+    }
+
+    // 파이어베이스 유저 정보를 인자로 받는다
+    private fun onAuthSuccess (user: FirebaseUser) {
+        // 실시간 데이터베이스 입력 -> 비동기
+        var email = user.email!!
+        val userName = if(user.email!!.contains("@")){
+            email.split("@".toRegex())[0]
+        }else{
+            email
+        } // email에서 @ 앞부분만 취한다.
+        updateUserInfo(user.uid, userName, email)
+
+        // 화면 전환 -> 서비스 화면 이동
+        //
+    }
+    // 회원 정보 가입 혹은 업데이트
+    private fun updateUserInfo(uid:String, name:String, email:String) {
+        val user = User(name, email)
+        // /users/해시값(중복되지 않은)/유저(구조)
+        // /users/uid(유저의 익명아이디->해시값)/유저정보(구조)
+        mDataBase.child("users").child(uid).setValue(user)
+                .addOnCompleteListener(this) { task -> Log.i(TAG, "디비 입력 결과 ${task.isSuccessful}") }
     }
 }
