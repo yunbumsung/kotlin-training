@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">kotlin_fb_demo</string>
+    <string name="email_input">이메일 입력</string>
+    <string name="pwd_input">비밀번호는 8자이상</string>
+    <string name="sign_in_btn">로그인</string>
+    <string name="sign_up_btn">회원가입</string>
+    <string name="sign_out_btn">로그아웃</string>
+</resources>
