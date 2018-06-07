@@ -16,13 +16,13 @@ open class RootActivity : AppCompatActivity() {
     // 아무것도 넣지 않으면 "..로딩.." 기본 문구로 처리
     fun showProgressDialog(msg:String = "...로딩...") {
         // mProgressDialog 객체가 널이면 생성 ProgressDialog(this) 아니면 그냥 사용
-        val p = mProgressDialog ?: ProgressDialog(this)
+        val mProgressDialog = mProgressDialog ?: ProgressDialog(this)
         // 백키를 누르면 창이 닫히는 것 거부
         //p.setCancelable(false)
         // 메시지 설정
-        p.setMessage(msg)
+        mProgressDialog.setMessage(msg)
         // 화면에 보인다
-        p.show()
+        mProgressDialog.show()
     }
     // 로딩 닫기
     fun hideProgressDialog() {
