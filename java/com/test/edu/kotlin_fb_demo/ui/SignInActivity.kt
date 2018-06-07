@@ -1,5 +1,6 @@
 package com.test.edu.kotlin_fb_demo.ui
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
@@ -58,7 +59,33 @@ class SignInActivity : RootActivity(), View.OnClickListener {
     }
 
     fun sign_in () {
-
+        // 로그인
+        // 입력폼 검사 OK
+        if (!validForm()) return
+        // 로딩띠우기
+        showProgressDialog("..로그인 중..")
+        // 이메일, 비번 획득
+        val email = field_email.text.toString()
+        val password = field_password.text.toString()
+        // fb 이메일과 비번으로 로그인 진행
+        mAuth.signInWithEmailAndPassword(email, password)
+        // 완료가 떨어지면
+        // 로딩 닫고
+        // 인증성공으로 함수 호출 -> 화면이동
+                .addOnCompleteListener(this) { task ->
+                    // 로딩 닫기
+                    hideProgressDialog()
+                    if (task.isSuccessful) {
+                        // 로그인 성공
+                        // 성공하면 -> 로그인
+                        Log.i(TAG, "로그인 성공 ${task.result.user}")
+                        onAuthSuccess(task.result.user)
+                    } else {
+                        // 로그인 실패
+                        // 실패하면 -> 모라하고
+                        Toast.makeText(this@SignInActivity, "로그인 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
     }
 
     fun sign_up () {
@@ -100,7 +127,7 @@ class SignInActivity : RootActivity(), View.OnClickListener {
 
         if(TextUtils.isEmpty(field_password.text.toString())) {
             result = false
-            field_email.setError("비밀번호가 부정확합니다.")
+            field_password.setError("비밀번호가 부정확합니다.")
         } else {
             field_password.setError(null)
         }
@@ -120,7 +147,8 @@ class SignInActivity : RootActivity(), View.OnClickListener {
         updateUserInfo(user.uid, userName, email)
 
         // 화면 전환 -> 서비스 화면 이동
-        //
+        startActivity(Intent(this, ServiceActivity::class.java))
+        finish()
     }
     // 회원 정보 가입 혹은 업데이트
     private fun updateUserInfo(uid:String, name:String, email:String) {

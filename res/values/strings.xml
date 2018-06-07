@@ -5,4 +5,11 @@
     <string name="sign_in_btn">로그인</string>
     <string name="sign_up_btn">회원가입</string>
     <string name="sign_out_btn">로그아웃</string>
+    <string name="title_activity_service">ServiceActivity</string>
+    <string name="title_home">최신글보기</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="menu_signout">로그아웃</string>
+    <string name="menu_newpost">새글쓰기</string>
 </resources>

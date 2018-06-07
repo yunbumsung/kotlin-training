@@ -18,7 +18,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.RootActivity" />
-        <activity android:name=".ui.SignInActivity"></activity>
+        <activity android:name=".ui.SignInActivity" />
+        <activity
+            android:name=".ui.ServiceActivity"
+            android:label="@string/title_activity_service"></activity>
     </application>
 
 </manifest>
