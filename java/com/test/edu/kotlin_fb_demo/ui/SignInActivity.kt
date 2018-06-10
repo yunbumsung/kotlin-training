@@ -1,6 +1,7 @@
 package com.test.edu.kotlin_fb_demo.ui
 
 import android.content.Intent
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
@@ -12,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.miguelbcr.ui.rx_paparazzo2.entities.size.SmallSize
 import com.test.edu.kotlin_fb_demo.models.User
@@ -19,6 +21,7 @@ import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import java.io.File
 
 
 class SignInActivity : RootActivity(), View.OnClickListener {
@@ -180,6 +183,30 @@ class SignInActivity : RootActivity(), View.OnClickListener {
                     response ->
                     // 파일 경로
                     Log.i(TAG, response.data().file.absolutePath)
+                    uploadFile(response.data().file)
+                }
+
+    }
+
+    fun uploadFile(file: File) {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.getReference() // /
+        // 파일 Uri 개체
+        val uri = Uri.fromFile(file)
+        // 업로드할 파일의 경로
+        val uRef = storageRef.child("thumb/${uri.lastPathSegment}")
+        uRef.putFile(uri)
+                .continueWithTask {
+                    task ->
+                    // 다운로드 URL 요청
+                    uRef.downloadUrl
+                }
+                .addOnCompleteListener {
+                    task ->
+                    if (task.isSuccessful) {
+                        Log.i(TAG, task.result.toString())
+                        Toast.makeText(this@SignInActivity, "업로드되었습니다.", Toast.LENGTH_SHORT)
+                    }
                 }
 
     }
