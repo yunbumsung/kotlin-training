@@ -8,12 +8,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.Query
+import com.google.firebase.database.*
 
 import com.test.edu.kotlin_fb_demo.R
 import com.test.edu.kotlin_fb_demo.models.Post
@@ -79,7 +78,15 @@ class RootFragment : Fragment() {
                 }
                 // 셀 하나 하나를 세팅해 달라
                 holder.bindToPost(model, View.OnClickListener {
+                    // 좋아요 누르면 해당 유저가 눌렀음을 디비에 반영
+                    // 효과 토글
+                    // 전체 글에서 해당 글을 찾아서 수정
+                    // 내글에서 해당 글을 찾아서 수정
+                    val totalPostRef = mDatabase.child("/posts").child(key!!)
+                    val myPostRed = mDatabase.child("user-posts").child(model.uid).child(key!!)
 
+                    changeStarState(totalPostRef)
+                    changeStarState(myPostRed)
 
                 })
             }
@@ -90,6 +97,37 @@ class RootFragment : Fragment() {
 
 
     }
+
+    fun changeStarState(ref:DatabaseReference) {
+        // 스타를 누르면 트렌젝션을 걸어서 수정
+        ref.runTransaction(object : Transaction.Handler{
+            override fun onComplete(p0: DatabaseError?, p1: Boolean, p2: DataSnapshot?) {
+                Toast.makeText(context, if(p1) "변경완료" else "변경실패", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun doTransaction(p0: MutableData): Transaction.Result {
+                // 데이터를 획득 -> 못하면 반납 종료
+                val p = p0.getValue<Post>(Post::class.java) ?: return Transaction.success(p0)
+
+                if (p.likes.containsKey(userID())){
+                    // 좋아요일때 눌렀는가? -> 풀고
+                    p.likeCount--
+                    p.likes.remove(userID())
+                } else {
+                    // 아닌상태일때 눌렀는가?? -> 체크
+                    p.likeCount++
+                    p.likes.put(userID()!!, true)
+                }
+                // 이렇게 가공 된 데이터를 다시 반납
+                p0.value = p
+
+                // 이 결과를 트렌젝션에 적용
+                return Transaction.success(p0)
+            }
+        })
+    }
+
+    fun userID() = FirebaseAuth.getInstance().currentUser?.uid
 
     override fun onStart() {
         super.onStart()

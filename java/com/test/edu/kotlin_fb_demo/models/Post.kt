@@ -17,7 +17,7 @@ class Post {
     lateinit var title:String
     lateinit var body:String
     var likeCount = 0
-    var likes:Map<String, Boolean> = HashMap()
+    val likes:MutableMap<String, Boolean> = mutableMapOf()
 
     constructor(){}
     constructor(uid: String, author: String, title: String, body: String) {

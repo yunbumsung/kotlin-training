@@ -30,5 +30,6 @@ class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         post_title_view.text = post.title
         post_body_view.text = post.body
         star_count.text = "${post.likeCount}"
+        star.setOnClickListener(starClick)
     }
 }
