@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "646544936543",
+    "firebase_url": "https://nciakotlin-yb.firebaseio.com",
+    "project_id": "nciakotlin-yb",
+    "storage_bucket": "nciakotlin-yb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:646544936543:android:c6d7540d4801c4a2",
+        "android_client_info": {
+          "package_name": "com.test.edu.kotlin_fb_demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "646544936543-9f6et6rr5m1be6qqoga3l97j599knghv.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "646544936543-9f6et6rr5m1be6qqoga3l97j599knghv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS6hM7UGXeRzB2S_ktiujeLwBqrRoL1Zc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
