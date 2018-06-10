@@ -26,7 +26,7 @@ class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     // 글이 전달되면 뷰에 세팅
     fun bindToPost(post:Post, starClick:View.OnClickListener) {
-            post_author_name.text = post.author
+        post_author_name.text = post.author
         post_title_view.text = post.title
         post_body_view.text = post.body
         star_count.text = "${post.likeCount}"

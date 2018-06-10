@@ -76,6 +76,15 @@ class RootFragment : Fragment() {
                     intent.putExtra(PostDetailActivity.EXTRA_KEY, key)
                     startActivity(intent)
                 }
+                // 좋아요 표시 처리
+                val p = model
+                if (p.likes.containsKey(userID())){
+                    // 좋아요일때 눌렀는가? -> 풀고
+                    holder.star.setImageResource(R.drawable.ic_toggle_star_24)
+                } else {
+                    // 아닌상태일때 눌렀는가?? -> 체크
+                    holder.star.setImageResource(R.drawable.ic_toggle_star_outline_24)
+                }
                 // 셀 하나 하나를 세팅해 달라
                 holder.bindToPost(model, View.OnClickListener {
                     // 좋아요 누르면 해당 유저가 눌렀음을 디비에 반영
