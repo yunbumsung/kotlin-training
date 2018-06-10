@@ -1,6 +1,7 @@
 package com.test.edu.kotlin_fb_demo.frag
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -16,6 +17,7 @@ import com.google.firebase.database.Query
 
 import com.test.edu.kotlin_fb_demo.R
 import com.test.edu.kotlin_fb_demo.models.Post
+import com.test.edu.kotlin_fb_demo.ui.PostDetailActivity
 import com.test.edu.kotlin_fb_demo.viewholder.PostViewHolder
 import kotlinx.android.synthetic.main.fragment_root.*
 
@@ -63,8 +65,21 @@ class RootFragment : Fragment() {
             }
 
             override fun onBindViewHolder(holder: PostViewHolder, position: Int, model: Post) {
+                // 해당글의 고유키를 획득
+                val postRef = getRef(position)
+                val key = postRef.key
+
+                // 상세보기
+                holder.itemView.setOnClickListener{
+                    // 상세 페이지 이동 전개 -> 글 고유 번호
+                    var intent = Intent(activity, PostDetailActivity::class.java)
+                    // 글 고유 번호
+                    intent.putExtra(PostDetailActivity.EXTRA_KEY, key)
+                    startActivity(intent)
+                }
                 // 셀 하나 하나를 세팅해 달라
                 holder.bindToPost(model, View.OnClickListener {
+
 
                 })
             }
