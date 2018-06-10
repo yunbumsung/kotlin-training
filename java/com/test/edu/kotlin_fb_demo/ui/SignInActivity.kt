@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.miguelbcr.ui.rx_paparazzo2.entities.size.SmallSize
+import com.squareup.picasso.Picasso
 import com.test.edu.kotlin_fb_demo.models.User
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -206,8 +207,13 @@ class SignInActivity : RootActivity(), View.OnClickListener {
                     if (task.isSuccessful) {
                         Log.i(TAG, task.result.toString())
                         Toast.makeText(this@SignInActivity, "업로드되었습니다.", Toast.LENGTH_SHORT)
+                        setThumb(task.result.toString())
                     }
                 }
 
+    }
+
+    fun setThumb(url:String){
+        Picasso.get().load(url).into(profile);
     }
 }
