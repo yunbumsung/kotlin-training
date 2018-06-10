@@ -12,7 +12,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
+import com.miguelbcr.ui.rx_paparazzo2.entities.size.SmallSize
 import com.test.edu.kotlin_fb_demo.models.User
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_sign_in.*
 
 
@@ -34,6 +39,9 @@ class SignInActivity : RootActivity(), View.OnClickListener {
         // 버튼 이벤트
         btn_sign_in.setOnClickListener(this)
         btn_sign_up.setOnClickListener(this)
+
+        // 사진을 클릭하면 호출
+        profile.setOnClickListener(this)
     }
 
     override fun onStart() {
@@ -55,6 +63,7 @@ class SignInActivity : RootActivity(), View.OnClickListener {
         when(id) {
             R.id.btn_sign_in -> sign_in()
             R.id.btn_sign_up -> sign_up()
+            R.id.profile -> getPicture()
         }
     }
 
@@ -157,5 +166,21 @@ class SignInActivity : RootActivity(), View.OnClickListener {
         // /users/uid(유저의 익명아이디->해시값)/유저정보(구조)
         mDataBase.child("users").child(uid).setValue(user)
                 .addOnCompleteListener(this) { task -> Log.i(TAG, "디비 입력 결과 ${task.isSuccessful}") }
+    }
+
+    // 카메라 띠우기(포토앨범, 파일경로) -> 크롭 -> 파일로 다운 -> 업로드 -> 다운로드 URL 획득
+    fun getPicture() {
+        RxPaparazzo.single(this)
+                .crop()
+                .size(SmallSize()) // 해상도 조절
+                .usingCamera()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    response ->
+                    // 파일 경로
+                    Log.i(TAG, response.data().file.absolutePath)
+                }
+
     }
 }
