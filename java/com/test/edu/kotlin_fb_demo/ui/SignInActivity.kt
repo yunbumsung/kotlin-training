@@ -11,8 +11,7 @@ import android.widget.Toast
 import com.test.edu.kotlin_fb_demo.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.miguelbcr.ui.rx_paparazzo2.entities.size.SmallSize
@@ -120,7 +119,15 @@ class SignInActivity : RootActivity(), View.OnClickListener {
                         // 가입 성공
                         // 성공하면 -> 로그인
                         Log.i(TAG, "가입 성공 ${task.result.user}")
-                        onAuthSuccess(task.result.user)
+                        // onAuthSuccess(task.result.user)
+                        val userName = if(email.contains("@")){
+                            email.split("@".toRegex())[0]
+                        }else{
+                            email
+                        }
+                        updateUserInfo(userID()!!, userName, email)
+                        startActivity(Intent(this@SignInActivity, ServiceActivity::class.java))
+                        finish()
                     } else {
                         // 가입 실패
                         // 실패하면 -> 모라하고
@@ -157,12 +164,32 @@ class SignInActivity : RootActivity(), View.OnClickListener {
             email.split("@".toRegex())[0]
         }else{
             email
-        } // email에서 @ 앞부분만 취한다.
-        updateUserInfo(user.uid, userName, email)
+        }
 
-        // 화면 전환 -> 서비스 화면 이동
-        startActivity(Intent(this, ServiceActivity::class.java))
-        finish()
+        // 디비도 체크하여 한쪽이라도 없으면 실패로 간주
+        val mDataBase = FirebaseDatabase.getInstance().getReference()
+        // 회원여부 확인 -> 회원이면 -> 글을 업로드 한다.
+        val userID = userID()
+        mDataBase.child("users").child(userID!!).addListenerForSingleValueEvent(
+                object: ValueEventListener {
+                    override fun onCancelled(p0: DatabaseError) {}
+
+                    override fun onDataChange(p0: DataSnapshot) {
+                        val user = p0.getValue<User>(User::class.java)
+                        if (user == null) {
+                            Toast.makeText(this@SignInActivity, "회원이 아닙니다.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // email에서 @ 앞부분만 취한다.
+                            mProfile = user.profile
+                            updateUserInfo(userID, userName, email)
+
+                            // 화면 전환 -> 서비스 화면 이동
+                            startActivity(Intent(this@SignInActivity, ServiceActivity::class.java))
+                            finish()
+                        }
+                    }
+                }
+        )
     }
     // 회원 정보 가입 혹은 업데이트
     private fun updateUserInfo(uid:String, name:String, email:String) {
