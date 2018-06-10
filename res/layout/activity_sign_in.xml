@@ -7,12 +7,23 @@
     tools:context=".ui.SignInActivity">
 
     <!-- 이미지:카메라나 포토앨범 이미지 세팅 -->
-    <ImageView
+    <!--<ImageView
         android:id="@+id/profile"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:src="@drawable/fb"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        />-->
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/fb"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         />

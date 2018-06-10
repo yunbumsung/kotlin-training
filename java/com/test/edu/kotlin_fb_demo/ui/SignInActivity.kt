@@ -29,6 +29,7 @@ class SignInActivity : RootActivity(), View.OnClickListener {
     private val mAuth: FirebaseAuth
     private val mDataBase: DatabaseReference
     private val TAG:String = "SignInActivity"
+    private var mProfile:String ?= null
 
     init {
         // 인증에 필요한 모든 작업
@@ -165,7 +166,7 @@ class SignInActivity : RootActivity(), View.OnClickListener {
     }
     // 회원 정보 가입 혹은 업데이트
     private fun updateUserInfo(uid:String, name:String, email:String) {
-        val user = User(name, email)
+        val user = User(name, email, mProfile ?: "")
         // /users/해시값(중복되지 않은)/유저(구조)
         // /users/uid(유저의 익명아이디->해시값)/유저정보(구조)
         mDataBase.child("users").child(uid).setValue(user)
@@ -190,6 +191,7 @@ class SignInActivity : RootActivity(), View.OnClickListener {
     }
 
     fun uploadFile(file: File) {
+        showProgressDialog()
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.getReference() // /
         // 파일 Uri 개체
@@ -214,6 +216,8 @@ class SignInActivity : RootActivity(), View.OnClickListener {
     }
 
     fun setThumb(url:String){
-        Picasso.get().load(url).into(profile);
+        mProfile = url
+        Picasso.get().load(url).into(profile)
+        hideProgressDialog()
     }
 }
