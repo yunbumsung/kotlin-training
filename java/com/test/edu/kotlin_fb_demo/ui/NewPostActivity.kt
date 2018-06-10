@@ -47,7 +47,7 @@ class NewPostActivity : RootActivity() {
                     override fun onDataChange(p0: DataSnapshot) {
                         val user = p0.getValue<User>(User::class.java)
                         if (user == null) {
-                            Toast.makeText(this@NewPostActivity, "회원이 아닙니다.${user?.username ?: "null"}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@NewPostActivity, "회원이 아닙니다.", Toast.LENGTH_SHORT).show()
                         } else {
                             // 회원임을 검증하였으므로, 글을 업로드 한다.
                             uploadNewPost(user)

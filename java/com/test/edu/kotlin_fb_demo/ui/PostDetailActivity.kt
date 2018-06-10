@@ -2,15 +2,21 @@ package com.test.edu.kotlin_fb_demo.ui
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.database.*
 import com.test.edu.kotlin_fb_demo.R
+import com.test.edu.kotlin_fb_demo.models.Comment
 import com.test.edu.kotlin_fb_demo.models.Post
+import com.test.edu.kotlin_fb_demo.models.User
+import kotlinx.android.synthetic.main.activity_post_detail.*
+import kotlinx.android.synthetic.main.content_new_post.*
 import kotlinx.android.synthetic.main.item_author.*
 import kotlinx.android.synthetic.main.item_text.*
 
-class PostDetailActivity : AppCompatActivity() {
+class PostDetailActivity : RootActivity() {
     private var mPostRef:DatabaseReference?=null
     private var mCommentRef:DatabaseReference?=null
     private var mPostListener:ValueEventListener?=null
@@ -64,6 +70,52 @@ class PostDetailActivity : AppCompatActivity() {
 
     fun onCommentSend(view: View){
         // 댓글입력
+        // 유효성 검사
+        if (!validForm(comment_text, "댓글이 없습니다.")) return
+        // 로딩
+        showProgressDialog("-- 글 업로드 중---")
+        // 사용자정보 확인 -> 글정보 준비
+        val mDataBase = FirebaseDatabase.getInstance().getReference()
+        val userID = userID()
+        mDataBase.child("users").child(userID!!).addListenerForSingleValueEvent(
+                object: ValueEventListener{
+                    override fun onCancelled(p0: DatabaseError) {
+                        hideProgressDialog()
+                    }
 
+                    override fun onDataChange(p0: DataSnapshot) {
+                        val user = p0.getValue<User>(User::class.java)
+                        if (user == null) {
+                            Toast.makeText(this@PostDetailActivity, "회원이 아닙니다.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // 회원임을 검증하였으므로, 글을 업로드 한다.
+                            // 경로: /post-comments/글번호/해쉬키/열매(Comment)
+                            // 경로 맞춰서 입력
+                            val comment = Comment(userID, user.email, comment_text.text.toString())
+                            // 댓글 입력
+                            mCommentRef!!.push().setValue(comment).addOnCompleteListener {
+                                task -> if(task.isSuccessful) Toast.makeText(this@PostDetailActivity, "등록되었습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                            // 입력창 초기화
+                            comment_text.text.clear()
+                        }
+                        hideProgressDialog()
+                    }
+                }
+        )
+
+    }
+
+    private fun validForm(target:EditText, msg:String):Boolean {
+        // 비웠는지 체크 각각 -> 에러메시지 처리 및 초기화
+        var result:Boolean = true
+        if(TextUtils.isEmpty(target.text.toString())) {
+            result = false
+            target.setError(msg)
+        } else {
+            target.setError(null)
+        }
+
+        return result
     }
 }
