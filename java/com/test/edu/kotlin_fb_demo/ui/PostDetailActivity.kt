@@ -2,15 +2,23 @@ package com.test.edu.kotlin_fb_demo.ui
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.*
 import com.test.edu.kotlin_fb_demo.R
 import com.test.edu.kotlin_fb_demo.models.Comment
 import com.test.edu.kotlin_fb_demo.models.Post
 import com.test.edu.kotlin_fb_demo.models.User
+import com.test.edu.kotlin_fb_demo.viewholder.CommentViewHdoler
+import com.test.edu.kotlin_fb_demo.viewholder.PostViewHolder
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import kotlinx.android.synthetic.main.content_new_post.*
 import kotlinx.android.synthetic.main.item_author.*
@@ -20,6 +28,7 @@ class PostDetailActivity : RootActivity() {
     private var mPostRef:DatabaseReference?=null
     private var mCommentRef:DatabaseReference?=null
     private var mPostListener:ValueEventListener?=null
+    private var mAdapter:FirebaseRecyclerAdapter<Comment, CommentViewHdoler>?=null
 
     // static 대용
     companion object {
@@ -38,6 +47,30 @@ class PostDetailActivity : RootActivity() {
         // 본글, 본글에 해당되는 댓글
         mPostRef = FirebaseDatabase.getInstance().getReference().child("posts").child(postKey)
         mCommentRef = FirebaseDatabase.getInstance().getReference().child("post-comments").child(postKey)
+
+        // 댓글 리스트 뿌리기
+        // 퀴리
+        var query = mCommentRef!!.limitToFirst(100)
+        // 퀴리를 기반으로 옵션
+        var options = FirebaseRecyclerOptions.Builder<Comment>().setQuery(query, Comment::class.java).build()
+        // 아답터
+        // 뷰홀더 CommentViewHolder
+
+        // 댓글 하나를 담는 그릇 ok
+        // xml
+        mAdapter = object : FirebaseRecyclerAdapter<Comment, CommentViewHdoler>(options) {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHdoler {
+                return CommentViewHdoler( layoutInflater.inflate(R.layout.item_comment,parent,false) )
+            }
+
+            override fun onBindViewHolder(holder: CommentViewHdoler, position: Int, model: Comment) {
+
+            }
+        }
+        // 리사이클러뷰에 매니저 등록, 아답터 연결
+        comment_list.adapter = mAdapter
+        comment_list.layoutManager = LinearLayoutManager(this)
+        // 아답터의 리스닝 등록, 해제
     }
 
     override fun onStart() {
@@ -58,6 +91,7 @@ class PostDetailActivity : RootActivity() {
         }
         mPostRef?.addValueEventListener(mPostListener!!)
         // 댓글을 가져온다.
+        mAdapter?.startListening()
     }
 
     override fun onStop() {
@@ -65,7 +99,7 @@ class PostDetailActivity : RootActivity() {
         // ValueEventListener 해제한다
         if (mPostListener != null)
             mPostRef?.removeEventListener(mPostListener!!)
-
+        mAdapter?.stopListening()
     }
 
     fun onCommentSend(view: View){
