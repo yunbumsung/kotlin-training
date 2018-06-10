@@ -64,6 +64,7 @@ class PostDetailActivity : RootActivity() {
             }
 
             override fun onBindViewHolder(holder: CommentViewHdoler, position: Int, model: Comment) {
+                holder.bindToComment(model)
 
             }
         }
